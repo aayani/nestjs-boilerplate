@@ -5,3 +5,6 @@ aws:
   credentials:
     accessKeyId: MyAwsAccessKeyId
     secretAccessKey: MyAwsSecretAccessKey
+
+db:
+  url: <db-url>

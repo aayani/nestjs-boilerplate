@@ -16,6 +16,8 @@ export class ConfigService {
     this.config = YAML.parse(
       fs.readFileSync(path.resolve('config', 'index.yaml')).toString(),
     )
+
+    process.env.DATABASE_URL = this.config.db.url
   }
 
   get env(): string {

@@ -4,9 +4,14 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 
 import { AppModule } from './app.module'
 import { ConfigService } from './config/config.service'
+import { PrismaService } from './prisma/prisma.service'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
+  const prismaService: PrismaService = app.get(PrismaService)
+
+  prismaService.enableShutdownHooks(app)
+
   const config = app.get(ConfigService)
 
   app.setGlobalPrefix('api')

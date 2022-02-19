@@ -1,8 +1,7 @@
 import * as fs from 'fs';
 import * as dotenv from 'dotenv';
+import * as AWS from 'aws-sdk/lib/config';
 import { Injectable } from '@nestjs/common';
-import { ConfigurationOptions, APIVersions } from 'aws-sdk/lib/config';
-import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
 
 @Injectable()
 export class ConfigService {
@@ -20,13 +19,13 @@ export class ConfigService {
     return Number(process.env.PORT) || 3000;
   }
 
-  get aws(): ConfigurationOptions &
-    ConfigurationServicePlaceholders &
-    APIVersions {
+  get aws(): Partial<AWS.Config> {
     return {
       region: process.env.AWS_REGION,
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      },
     };
   }
 }

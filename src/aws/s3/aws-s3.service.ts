@@ -1,24 +1,24 @@
-import * as AWS from 'aws-sdk';
-import { Injectable } from '@nestjs/common';
+import * as AWS from 'aws-sdk'
+import { Injectable } from '@nestjs/common'
 
 @Injectable()
 export class AwsS3Service {
-  private s3: AWS.S3;
+  private s3: AWS.S3
 
   constructor() {
-    this.s3 = new AWS.S3({ apiVersion: '2006-03-01' });
+    this.s3 = new AWS.S3({ apiVersion: '2006-03-01' })
   }
 
   public bucketExists(params: AWS.S3.HeadBucketRequest): Promise<boolean> {
     return new Promise((resolve) => {
       this.s3.waitFor('bucketExists', params, (err) => {
         if (err) {
-          resolve(false);
+          resolve(false)
         } else {
-          resolve(true);
+          resolve(true)
         }
-      });
-    });
+      })
+    })
   }
 
   public objectExists(
@@ -27,12 +27,12 @@ export class AwsS3Service {
     return new Promise((resolve, reject) => {
       this.s3.waitFor('objectExists', params, (err, data) => {
         if (err) {
-          reject(err);
+          reject(err)
         } else {
-          resolve(data);
+          resolve(data)
         }
-      });
-    });
+      })
+    })
   }
 
   public getObject(
@@ -41,12 +41,12 @@ export class AwsS3Service {
     return new Promise((resolve, reject) => {
       this.s3.getObject(params, (err, data) => {
         if (err) {
-          reject(err);
+          reject(err)
         } else {
-          resolve(data);
+          resolve(data)
         }
-      });
-    });
+      })
+    })
   }
 
   public putObject(
@@ -55,11 +55,11 @@ export class AwsS3Service {
     return new Promise((resolve, reject) => {
       this.s3.putObject(params, (err, data) => {
         if (err) {
-          reject(err);
+          reject(err)
         } else {
-          resolve(data);
+          resolve(data)
         }
-      });
-    });
+      })
+    })
   }
 }

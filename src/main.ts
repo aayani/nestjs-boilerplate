@@ -1,15 +1,15 @@
-import { Logger } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { Logger } from '@nestjs/common'
+import { NestFactory } from '@nestjs/core'
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 
-import { AppModule } from './app.module';
-import { ConfigService } from './config/config.service';
+import { AppModule } from './app.module'
+import { ConfigService } from './config/config.service'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const config = app.get(ConfigService);
+  const app = await NestFactory.create(AppModule)
+  const config = app.get(ConfigService)
 
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api')
   SwaggerModule.setup(
     'api/docs',
     app,
@@ -22,12 +22,12 @@ async function bootstrap() {
         .addTag('cats')
         .build(),
     ),
-  );
+  )
 
-  await app.listen(config.port);
+  await app.listen(config.port)
   Logger.log(
     `API running at http://localhost:${config.port} in "${config.env}" mode`,
     'Main',
-  );
+  )
 }
-bootstrap();
+bootstrap()

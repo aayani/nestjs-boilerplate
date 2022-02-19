@@ -4,11 +4,11 @@ import {
   HttpException,
   NestInterceptor,
   ExecutionContext,
-} from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+} from '@nestjs/common'
+import { Observable } from 'rxjs'
+import { tap, catchError } from 'rxjs/operators'
 
-import { ApmService } from './apm.service';
+import { ApmService } from './apm.service'
 
 @Injectable()
 export class ApmInterceptor implements NestInterceptor {
@@ -17,29 +17,29 @@ export class ApmInterceptor implements NestInterceptor {
   intercept(ctx: ExecutionContext, next: CallHandler): Observable<Response> {
     const {
       raw: { url, method },
-    } = ctx.switchToHttp().getRequest();
+    } = ctx.switchToHttp().getRequest()
     const transaction = this.apmService.startTransaction(
       `${method} ${String(url).split('?')[0].toLowerCase()}`,
       'request',
-    );
+    )
 
     return next.handle().pipe(
       tap(() => {
-        transaction.end('HTTP 2xx');
+        transaction.end('HTTP 2xx')
       }),
       catchError((err) => {
         if (err instanceof HttpException) {
           if (err.getStatus() === 500) {
-            this.apmService.captureError(err.message);
+            this.apmService.captureError(err.message)
           }
 
-          transaction.end(`HTTP ${String(err.getStatus())[0]}xx`);
+          transaction.end(`HTTP ${String(err.getStatus())[0]}xx`)
         } else {
-          this.apmService.captureError(err);
+          this.apmService.captureError(err)
         }
 
-        throw err;
+        throw err
       }),
-    );
+    )
   }
 }

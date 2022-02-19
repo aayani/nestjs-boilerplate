@@ -1,8 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common'
 
-import { AwsModule } from './aws/aws.module';
-import { AppController } from './app.controller';
-import { ConfigModule } from './config/config.module';
+import { AwsModule } from './aws/aws.module'
+import { AppController } from './app.controller'
+import { ConfigModule } from './config/config.module'
 
 @Module({
   imports: [AwsModule, ConfigModule],

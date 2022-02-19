@@ -1,12 +1,12 @@
-import * as AWS from 'aws-sdk';
-import { Injectable } from '@nestjs/common';
+import * as AWS from 'aws-sdk'
+import { Injectable } from '@nestjs/common'
 
 @Injectable()
 export class AwsKinesisService {
-  private kinesis: AWS.Kinesis;
+  private kinesis: AWS.Kinesis
 
   constructor() {
-    this.kinesis = new AWS.Kinesis({ apiVersion: '2013-12-02' });
+    this.kinesis = new AWS.Kinesis({ apiVersion: '2013-12-02' })
   }
 
   public getRecords(
@@ -15,12 +15,12 @@ export class AwsKinesisService {
     return new Promise((resolve, reject) => {
       this.kinesis.getRecords(params, (err, data) => {
         if (err) {
-          reject(err);
+          reject(err)
         } else {
-          resolve(data);
+          resolve(data)
         }
-      });
-    });
+      })
+    })
   }
 
   public getShardIterator(
@@ -29,12 +29,12 @@ export class AwsKinesisService {
     return new Promise((resolve, reject) => {
       this.kinesis.getShardIterator(params, (err, data) => {
         if (err) {
-          reject(err);
+          reject(err)
         } else {
-          resolve(data);
+          resolve(data)
         }
-      });
-    });
+      })
+    })
   }
 
   public listShards(
@@ -43,12 +43,12 @@ export class AwsKinesisService {
     return new Promise((resolve, reject) => {
       this.kinesis.listShards(params, (err, data) => {
         if (err) {
-          reject(err);
+          reject(err)
         } else {
-          resolve(data);
+          resolve(data)
         }
-      });
-    });
+      })
+    })
   }
 
   public listStreams(
@@ -57,12 +57,12 @@ export class AwsKinesisService {
     return new Promise((resolve, reject) => {
       this.kinesis.listStreams(params, (err, data) => {
         if (err) {
-          reject(err);
+          reject(err)
         } else {
-          resolve(data);
+          resolve(data)
         }
-      });
-    });
+      })
+    })
   }
 
   public streamExists(
@@ -71,11 +71,11 @@ export class AwsKinesisService {
     return new Promise((resolve, reject) => {
       this.kinesis.waitFor('streamExists', params, (err, data) => {
         if (err) {
-          reject(err);
+          reject(err)
         } else {
-          resolve(data);
+          resolve(data)
         }
-      });
-    });
+      })
+    })
   }
 }

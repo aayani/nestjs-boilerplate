@@ -1,10 +1,10 @@
-import * as AWS from 'aws-sdk';
-import { Injectable } from '@nestjs/common';
+import * as AWS from 'aws-sdk'
+import { Injectable } from '@nestjs/common'
 
-import { AwsS3Service } from './s3/aws-s3.service';
-import { ConfigService } from '../config/config.service';
-import { AwsLambdaService } from './lambda/aws-lambda.service';
-import { AwsKinesisService } from './kinesis/aws-kinesis.service';
+import { AwsS3Service } from './s3/aws-s3.service'
+import { ConfigService } from '../config/config.service'
+import { AwsLambdaService } from './lambda/aws-lambda.service'
+import { AwsKinesisService } from './kinesis/aws-kinesis.service'
 
 @Injectable()
 export class AwsService {
@@ -14,6 +14,6 @@ export class AwsService {
     public readonly Lambda: AwsLambdaService,
     public readonly Kinesis: AwsKinesisService,
   ) {
-    AWS.config.update(config.aws);
+    AWS.config.update(config.aws)
   }
 }

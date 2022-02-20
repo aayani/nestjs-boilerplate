@@ -1,26 +1,20 @@
 import * as fs from 'fs'
 import * as path from 'path'
+import { promisify } from 'util'
 import * as pluralize from 'pluralize'
 import { execSync } from 'child_process'
 import { PrismaClient } from '@prisma/client'
-
-const writeFile = (file: string, data: string): Promise<void> => {
-  return new Promise((resolve, reject) =>
-    fs.writeFile(file, data, (err) => {
-      if (err) {
-        reject(err)
-      }
-
-      resolve()
-    }),
-  )
-}
-
 ;(async () => {
   const prisma = new PrismaClient()
-  const template = fs
-    .readFileSync(path.resolve(__dirname, 'service.template'))
-    .toString()
+
+  const [moduleTemplate, serviceTemplate] = await Promise.all([
+    promisify(fs.readFile)(path.resolve(__dirname, 'module.template')).then(
+      (t) => t.toString(),
+    ),
+    promisify(fs.readFile)(path.resolve(__dirname, 'service.template')).then(
+      (t) => t.toString(),
+    ),
+  ])
 
   for (const [key, value] of Object.entries(prisma)) {
     if (key === '_dmmf') {
@@ -36,33 +30,35 @@ const writeFile = (file: string, data: string): Promise<void> => {
         const modulePath = path.resolve('src', model, `${model}.module.ts`)
         const servicePath = path.resolve('src', model, `${model}.service.ts`)
 
-        if (!fs.existsSync(modulePath)) {
+        if (fs.existsSync(modulePath)) {
+          console.log(`${modulePath} already exists. Skipping...`)
+        } else {
           console.log(`$ yarn nest generate module ${model}`)
           execSync(`yarn nest generate module ${model}`)
         }
 
-        if (!fs.existsSync(servicePath)) {
+        if (fs.existsSync(servicePath)) {
+          console.log(`${servicePath} already exists. Skipping...`)
+        } else {
           console.log(`$ yarn nest generate service ${model}`)
           execSync(`yarn nest generate service ${model}`)
 
-          const moduleData = fs
-            .readFileSync(modulePath)
-            .toString()
-            .replace(']', ', PrismaService]')
-            .replace(
-              ".service'",
-              ".service'\nimport { PrismaService } from '../prisma/prisma.service'",
-            )
-          const serviceData = template
-            .replace(new RegExp('{{model}}', 'g'), model)
-            .replace(
-              new RegExp('{{service}}', 'g'),
-              `${model[0].toUpperCase()}${model.slice(1)}Service`,
-            )
+          const title = `${model[0].toUpperCase()}${model.slice(1)}`
 
           await Promise.all([
-            writeFile(modulePath, moduleData),
-            writeFile(servicePath, serviceData),
+            promisify(fs.writeFile)(
+              modulePath,
+              moduleTemplate
+                .replace('{{model}}', model)
+                .replace('{{module}}', `${title}Module`)
+                .replace(new RegExp('{{service}}', 'g'), `${title}Service`),
+            ),
+            promisify(fs.writeFile)(
+              servicePath,
+              serviceTemplate
+                .replace('{{service}}', `${title}Service`)
+                .replace(new RegExp('{{model}}', 'g'), model),
+            ),
           ])
         }
       }

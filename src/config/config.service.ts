@@ -1,34 +1,23 @@
-import * as fs from 'fs'
-import * as YAML from 'yaml'
-import * as path from 'path'
-import * as AWS from 'aws-sdk/lib/config'
+import * as AWS from 'aws-sdk'
 import { Injectable } from '@nestjs/common'
 
 @Injectable()
 export class ConfigService {
-  private config: any
-
-  constructor() {
-    if (!fs.existsSync(path.resolve('config', 'index.yaml'))) {
-      throw new Error('Missing config file at config/index.yaml')
-    }
-
-    this.config = YAML.parse(
-      fs.readFileSync(path.resolve('config', 'index.yaml')).toString(),
-    )
-
-    process.env.DATABASE_URL = this.config.db.url
-  }
-
   get env(): string {
     return process.env.NODE_ENV
   }
 
   get port(): number {
-    return this.config.port || 3000
+    return Number(process.env.NODE_ENV) || 3000
   }
 
   get aws(): Partial<AWS.Config> {
-    return this.config.aws
+    return {
+      region: process.env.AWS_REGION,
+      credentials: {
+        accessKeyId: process.env.AWS_CREDENTIALS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_CREDENTIALS_SECRET_ACCESS_KEY,
+      },
+    }
   }
 }

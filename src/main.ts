@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 import { Logger } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
@@ -6,7 +8,7 @@ import { AppModule } from './app.module'
 import { ConfigService } from './config/config.service'
 import { PrismaService } from './prisma/prisma.service'
 
-async function bootstrap() {
+const bootstrap = async (): Promise<void> => {
   const app = await NestFactory.create(AppModule)
   const prismaService: PrismaService = app.get(PrismaService)
 
@@ -35,4 +37,5 @@ async function bootstrap() {
     'Main',
   )
 }
+
 bootstrap()

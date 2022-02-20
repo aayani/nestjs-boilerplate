@@ -1,0 +1,40 @@
+import { {{model}} } from '@prisma/client'
+import { Injectable } from '@nestjs/common'
+
+import { PrismaService } from '../prisma/prisma.service'
+
+@Injectable()
+export class {{service}} {
+  constructor(private readonly prisma: PrismaService) {}
+
+  public findById(id: string): Promise<{{model}} | null> {
+    try {
+      return this.prisma.{{model}}.findFirst({ where: { id } })
+    } catch {
+      return null
+    }
+  }
+
+  public findAll(): Promise<{{model}}[]> {
+    return this.prisma.{{model}}.findMany()
+  }
+
+  public create(data: {{model}}): Promise<{{model}}> {
+    return this.prisma.{{model}}.create({ data })
+  }
+
+  public updateById(
+    id: string,
+    data: Partial<{{model}}>,
+  ): Promise<{{model}} | null> {
+    try {
+      return this.prisma.{{model}}.update({ where: { id }, data })
+    } catch {
+      return null
+    }
+  }
+
+  public async deleteById(id: string): Promise<void> {
+    await this.prisma.{{model}}.delete({ where: { id } })
+  }
+}

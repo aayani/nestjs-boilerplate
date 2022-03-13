@@ -2,6 +2,6 @@ PORT=3000
 
 DATABASE_URL="<database-url>"
 
-AWS_REGION="aws-region-1"
-AWS_CREDENTIALS_ACCESS_KEY_ID="MyAwsAccessKeyId"
-AWS_CREDENTIALS_SECRET_ACCESS_KEY="MyAwsSecretAccessKey"
+AWS_REGION="<aws-region>"
+AWS_CREDENTIALS_ACCESS_KEY_ID="<aws-access-key-id>"
+AWS_CREDENTIALS_SECRET_ACCESS_KEY="<aws-secret-key>"

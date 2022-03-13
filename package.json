@@ -5,6 +5,8 @@
   "private": false,
   "license": "MIT",
   "scripts": {
+    "docker:up": "sh bin/docker-up.sh",
+    "docker:down": "sh bin/docker-down.sh",
     "db:introspect": "prisma db pull && yarn db:generate",
     "db:generate": "prisma generate",
     "generate:modules": "ts-node prisma/generate-modules && yarn format",

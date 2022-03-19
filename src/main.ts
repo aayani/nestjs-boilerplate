@@ -1,8 +1,7 @@
-require('dotenv').config()
-
 import { Logger } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
+import { Transport, MicroserviceOptions } from '@nestjs/microservices'
 
 import { AppModule } from './app.module'
 import { ConfigService } from './config/config.service'
@@ -16,26 +15,32 @@ const bootstrap = async (): Promise<void> => {
 
   const config = app.get(ConfigService)
 
-  app.setGlobalPrefix('api')
+  if (config.globalApiPrefix) {
+    app.setGlobalPrefix(config.globalApiPrefix)
+  }
+
   SwaggerModule.setup(
-    'api/docs',
+    config.apiDocsUrl,
     app,
     SwaggerModule.createDocument(
       app,
       new DocumentBuilder()
-        .setTitle('Cats example')
-        .setDescription('The cats API description')
-        .setVersion('1.0')
-        .addTag('cats')
+        .setTitle(config.appInfo.name)
+        .setVersion(config.appInfo.version)
+        .setDescription(config.appInfo.description)
         .build(),
     ),
   )
 
-  await app.listen(config.port)
-  Logger.log(
-    `API running at http://localhost:${config.port} in "${config.env}" mode`,
-    'Main',
-  )
+  const kafkaConsumer =
+    await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+      transport: Transport.KAFKA,
+      options: { client: config.kafka },
+    })
+
+  await Promise.all([app.listen(config.port), kafkaConsumer.listen()])
+
+  Logger.log(config.startupMessage, 'Main')
 }
 
 bootstrap()
